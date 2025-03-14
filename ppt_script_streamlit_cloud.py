@@ -34,7 +34,7 @@ def process_ppt(file_path):
 
 def generate_speaker_script(context, api_key):
     question = """
-    For each PowerPoint slide provided above, write a 2-minute script that effectively conveys the key points.
+    For each PowerPoint slide provided above, write a 2-3 minutes script for each slide that effectively conveys the key points.
     Ensure a smooth flow between slides, maintaining a clear and engaging narrative.
     """
     
