@@ -1,0 +1,6 @@
+streamlit
+nltk
+python-dotenv
+langchain-community
+langchain-groq
+unstructured[powerpoint]
