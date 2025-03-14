@@ -1,7 +1,6 @@
 import streamlit as st
 import nltk
 import os
-from dotenv import load_dotenv, find_dotenv
 from langchain_community.document_loaders import UnstructuredPowerPointLoader
 from langchain_groq import ChatGroq
 from langchain_core.prompts import (
@@ -9,10 +8,6 @@ from langchain_core.prompts import (
 )
 from langchain_core.output_parsers import StrOutputParser
 from nltk.data import find
-
-def load_environment():
-    _ = load_dotenv(find_dotenv())
-    return os.getenv("GROQ_API_KEY")
 
 def download_nltk_tokenizer():
     try:
@@ -64,7 +59,14 @@ def main():
     st.title("PowerPoint Speaker Script Generator")
     st.write("Upload a PowerPoint file, and the app will generate a speaker script for each slide.")
     
-    groq_api_key = load_environment()
+    with st.sidebar:
+        st.header("Instructions")
+        st.write("1. Upload a PowerPoint (.pptx) file.")
+        st.write("2. Click 'Generate Speaker Script'.")
+        st.write("3. Download or view the generated script.")
+        
+        groq_api_key = st.text_input("Enter your GROQ API Key", type="password")
+    
     download_nltk_tokenizer()
     uploaded_file = st.file_uploader("Upload a PowerPoint file", type=["pptx"])
     
@@ -73,17 +75,20 @@ def main():
         st.success("File uploaded successfully!")
         
         if st.button("Generate Speaker Script"):
-            with st.spinner("Processing... This may take a while."):
-                context = process_ppt(save_path)
-                response = generate_speaker_script(context, groq_api_key)
-                output_path = os.path.join("data", "ppt_script.md")
-                with open(output_path, "w") as f:
-                    f.write(response)
-                
-                st.success("Speaker script generated successfully!")
-                st.download_button(label="Download Speaker Script", data=response, file_name="ppt_script.md", mime="text/markdown")
-                st.markdown("### Generated Script")
-                st.markdown(f"<div style='background-color: #f0f0f0; padding: 10px; border-radius: 5px;'>{response}</div>", unsafe_allow_html=True)
+            if not groq_api_key:
+                st.error("Please enter your GROQ API Key in the sidebar.")
+            else:
+                with st.spinner("Processing... This may take a while."):
+                    context = process_ppt(save_path)
+                    response = generate_speaker_script(context, groq_api_key)
+                    output_path = os.path.join("data", "ppt_script.md")
+                    with open(output_path, "w") as f:
+                        f.write(response)
+                    
+                    st.success("Speaker script generated successfully!")
+                    st.download_button(label="Download Speaker Script", data=response, file_name="ppt_script.md", mime="text/markdown")
+                    st.markdown("### Generated Script")
+                    st.markdown(f"<div style='background-color: #f0f0f0; padding: 10px; border-radius: 5px;'>{response}</div>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
