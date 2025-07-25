@@ -38,7 +38,7 @@ def generate_speaker_script(context, api_key):
     Ensure a smooth flow between slides, maintaining a clear and engaging narrative.
     """
     
-    llm = ChatGroq(model="llama-3.2-90b-vision-preview", api_key=api_key)
+    llm = ChatGroq(model="meta-llama/llama-4-scout-17b-16e-instruct", api_key=api_key)
     system = SystemMessagePromptTemplate.from_template("You are a helpful AI assistant who answers user questions based on the provided context.")
     prompt_template = HumanMessagePromptTemplate.from_template(
         """Answer user question based on the provided context ONLY! If you do not know the answer, just say "I don't know".
